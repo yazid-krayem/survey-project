@@ -9,10 +9,8 @@ const initializeDatabase = async () =>{
    * retrieves the questions from the database
    */
 const getQuestionList =  async () =>{
-    let returnString = ''
     const  rows = await db.all('SELECT question_ID , question_name ,question_type FROM question')
-    rows.forEach ( ({question_ID , question_name ,question_type})=> returnString += `${question_ID} - ${question_name} - ${question_type}`)
-    return returnString 
+    return rows
 }
 const controller = {
     getQuestionList

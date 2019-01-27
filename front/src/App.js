@@ -2,7 +2,17 @@ import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
+  state={question_list : []}
+  componentDidMount(){
+    const getList = async () =>{
+      const respone =await fetch('//localhost:8080/questions/list')
+      const data = await respone.json()
+      this.setState({question_list:data})
+    }
+    getList()
+  }
   render() {
+    const question = this.state.question_list
     return (
       <div className="App">
         <header className="App-header">
@@ -11,6 +21,9 @@ class App extends Component {
           <button class='warning'>Warning</button>
           <button class='error'>Error</button>
           <button disabled>Disabled</button>
+          <ul>{question.map((x,i)=>(
+              <li key={i.question_ID}>{x.question_name}</li>
+          ))}</ul>
         </header>
       </div>
     );

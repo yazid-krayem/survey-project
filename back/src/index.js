@@ -9,7 +9,7 @@ const start = async () => {
 
   app.get('/questions/list', async (req,res)=>{
     const question_list = await controller.getQuestionList()
-    res.send(question_list)
+    res.json(question_list)
   })
   app.listen(8080, () => console.log('server listening on port 8080'))
 
