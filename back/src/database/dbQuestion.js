@@ -1,6 +1,5 @@
 import sqlite from 'sqlite'
 import SQL from 'sql-template-strings';
-import { type } from 'os';
 
 const initializeDatabase = async () =>{
 
@@ -9,17 +8,17 @@ const initializeDatabase = async () =>{
 
     /**
    * creates a question
-   * @param {object} props an object with keys `question` and `question-type`
+   * @param {object} props an object with keys `question-Title` and 
    * @returns {number} the id of the created question (or an error if things went wrong) 
    */
 
   const createQuestion = async (props) => {
-    if(!props || !props.name || !props.type){
+    if(!props || !props.question ){
       throw new Error(`you must provide a name and an type`)
     }
-    const { name, type } = props
+    const { question } = props
     try{
-      const result = await db.run(SQL`INSERT INTO question (question_name,question_type) VALUES (${name}, ${type})`);
+      const result = await db.run(SQL`INSERT INTO question (question_Title) VALUES (${question})`);
       const id = result.stmt.lastID
       return id
     }catch(e){
@@ -34,7 +33,7 @@ const initializeDatabase = async () =>{
    */
         const deleteQuestion = async (id) =>{
             try{
-                const result = await db.run(SQL `DELETE FROM question WHERE question_id =${id}`)
+                const result = await db.run(SQL `DELETE FROM question WHERE question_ID =${id}`)
                 if(result.stmt.changes === 0){
                  throw new Error (`question "${id}" does not exist`)
                 }
@@ -43,25 +42,22 @@ const initializeDatabase = async () =>{
                 throw new Error (`couldn't delete the question "${id}": `+e.message)
             }
         }
+
         /**
    * Edits a question
    * @param {number} id the id of the question to edit
-   * @param {object} props an object with at least one of `question` or `question-type`
+   * @param {object} props an object with at least one of `question-Title`
    */
 
         const updateQuestion = async (id,props) =>{
-            if(!props || !props.question ||!props.question_type){
-                throw new Error (`you must provide a question `);
+            if(!props || !props.question){
+                throw new Error (`you must provide a question`);
             }
-            const {question,question_type} = props
+            const {question} = props
             try{
                 let statement = '';
-                if(question && question_type){
-                    statement = SQL`UPDATE question SET question_name${question}, question_type${question_type} WHERE question_ID =${id}`
-                }else if(question){
-                    statement = SQL `UPDATE question SET question_name${question} WHERE question_ID=${id}` 
-                }else if(question_type){
-                    statement = SQL ` UPDATE question SET question_type${question_type} WHERE question_ID=${id}`
+                if(question){
+                    statement = SQL`UPDATE question SET question_Ttile${question}, WHERE question_ID =${id}`
                 }
                 const result = await db.run(statement)
                 if(result.stmt.changes === 0 ){
@@ -75,11 +71,11 @@ const initializeDatabase = async () =>{
         /**
    * Retrieves a question
    * @param {number} id the id of the question
-   * @returns {object} an object with `question_name`, `question_type`, and `question_ID`, representing a question, or an error 
+   * @returns {object} an object with `question_Title`, and `question_ID`, representing a question, or an error 
    */
     const getQuestion = async (id) => {
         try {
-            const questionsList = await db.all(SQL`SELECT question_ID AS id, question_name, question_type FROM question WHERE question_ID = ${id} `)
+            const questionsList = await db.all(SQL`SELECT question_ID AS id, question_Title FROM question WHERE question_ID = ${id} `)
             const question = question[0]
         if (!question) {
             throw new Error(`question ${id} not found `)
@@ -92,16 +88,15 @@ const initializeDatabase = async () =>{
 
      /**
    * retrieves the questions from the database
-   * @param {string} orderBy an optional string that is either "question" or "question_type"
+   * @param {string} orderBy an optional string that is either "question-Title"
    * @returns {array} the list of questions
    */
 
    const getQuestionList = async(orderBy) =>{
        try{
-           let statement = `SELECT question_ID AS id , question_name , question_type  FROM question `
+           let statement = `SELECT question_ID AS id , question_Title FROM question `
            switch(orderBy){
-            case 'question_name': statement+= ` ORDER BY question_name`; break;
-            case 'question_type': statement+= ` ORDER BY question_type`; break;
+            case 'question_Title': statement+= ` ORDER BY question_name`; break;
             default: break
         }
         const rows = await db.all(statement)

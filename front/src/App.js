@@ -21,8 +21,8 @@ class App extends Component {
           <button class='warning'>Warning</button>
           <button class='error'>Error</button>
           <button disabled>Disabled</button>
-          <ul>{question.map((x,i)=>(
-              <li key={i.question_ID}>{x.question_name}</li>
+          <ul>{question.map((x)=>(
+              <li key={x.question_ID}>{x.question_Title}</li>
           ))}</ul>
         </header>
       </div>
