@@ -1,18 +1,12 @@
 import app from './app'
 import initializeDatabase from './database/dbQuestion'
 
-const start = async () => {
-  const controller = await initializeDatabase()
+  const start = async () => {
+    const controller = await initializeDatabase()
+      const id = await controller.createQuestion({name:'wow',type:'working'})
+     const question = await controller.getQuestion(id)
+     console.log("------\nmy newly created question\n",question)
+
+  }
+  start();
   
-  app.get('/', async (req,res)=> res.send('ok'))
-
-
-  app.get('/questions/list', async (req,res)=>{
-    const question_list = await controller.getQuestionList()
-    res.json(question_list)
-  })
-  app.listen(8080, () => console.log('server listening on port 8080'))
-
-}
-
-start();
