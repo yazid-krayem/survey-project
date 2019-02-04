@@ -3,12 +3,12 @@ import SQL from 'sql-template-strings';
 
 const initializeDatabase = async () =>{
 
-    const db = await sqlite.open("./survey.sqlite");
+    const db = await sqlite.open("./omarData.sqlite");
 
 
     /**
    * creates a question
-   * @param {object} props an object with keys `question-Title` and 
+   * @param {object} props an object with keys `title_question` and 
    * @returns {number} the id of the created question (or an error if things went wrong) 
    */
 
@@ -18,7 +18,7 @@ const initializeDatabase = async () =>{
     }
     const { question } = props
     try{
-      const result = await db.run(SQL`INSERT INTO question (question_Title) VALUES (${question})`);
+      const result = await db.run(SQL`INSERT INTO question (title_question) VALUES (${question})`);
       const id = result.stmt.lastID
       return id
     }catch(e){
@@ -33,7 +33,7 @@ const initializeDatabase = async () =>{
    */
         const deleteQuestion = async (id) =>{
             try{
-                const result = await db.run(SQL `DELETE FROM question WHERE question_ID =${id}`)
+                const result = await db.run(SQL `DELETE FROM question WHERE id_question =${id}`)
                 if(result.stmt.changes === 0){
                  throw new Error (`question "${id}" does not exist`)
                 }
@@ -46,7 +46,7 @@ const initializeDatabase = async () =>{
         /**
    * Edits a question
    * @param {number} id the id of the question to edit
-   * @param {object} props an object with at least one of `question-Title`
+   * @param {object} props an object with at least one of `title_question`
    */
 
         const updateQuestion = async (id,props) =>{
@@ -57,7 +57,7 @@ const initializeDatabase = async () =>{
             try{
                 let statement = '';
                 if(question){
-                    statement = SQL`UPDATE question SET question_Ttile${question}, WHERE question_ID =${id}`
+                    statement = SQL`UPDATE question SET title_question${question}, WHERE id_question =${id}`
                 }
                 const result = await db.run(statement)
                 if(result.stmt.changes === 0 ){
@@ -71,11 +71,11 @@ const initializeDatabase = async () =>{
         /**
    * Retrieves a question
    * @param {number} id the id of the question
-   * @returns {object} an object with `question_Title`, and `question_ID`, representing a question, or an error 
+   * @returns {object} an object with `title_question`, and `id_question`, representing a question, or an error 
    */
     const getQuestion = async (id) => {
         try {
-            const questionsList = await db.all(SQL`SELECT question_ID AS id, question_Title FROM question WHERE question_ID = ${id} `)
+            const questionsList = await db.all(SQL`SELECT id_question AS id, title_question FROM question WHERE id_question = ${id} `)
             const question = question[0]
         if (!question) {
             throw new Error(`question ${id} not found `)
@@ -88,15 +88,15 @@ const initializeDatabase = async () =>{
 
      /**
    * retrieves the questions from the database
-   * @param {string} orderBy an optional string that is either "question-Title"
+   * @param {string} orderBy an optional string that is either "title_question"
    * @returns {array} the list of questions
    */
 
    const getQuestionList = async(orderBy) =>{
        try{
-           let statement = `SELECT question_ID AS id , question_Title FROM question `
+           let statement = `SELECT id_question AS id , title_question FROM question `
            switch(orderBy){
-            case 'question_Title': statement+= ` ORDER BY question_name`; break;
+            case 'title_question': statement+= ` ORDER BY title_question`; break;
             default: break
         }
         const rows = await db.all(statement)

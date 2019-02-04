@@ -7,7 +7,11 @@ class App extends Component {
     const getList = async () =>{
       const respone =await fetch('//localhost:8080/questions/list')
       const data = await respone.json()
-      this.setState({question_list:data})
+      if(data){
+        const question_list = data.result
+        this.setState({question_list})
+      }
+      // this.setState({question_list:data})
     }
     getList()
   }
@@ -22,7 +26,7 @@ class App extends Component {
           <button class='error'>Error</button>
           <button disabled>Disabled</button>
           <ul>{question.map((x)=>(
-              <li key={x.question_ID}>{x.question_Title}</li>
+              <li key={x.id_question}>{x.title_question}</li>
           ))}</ul>
         </header>
       </div>
