@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
+import { withRouter } from "react-router-dom";
+import Router from './Router';
 
 class App extends Component {
   state={
@@ -18,37 +19,26 @@ class App extends Component {
     }
     getList()
   }
+  
   handleChange = (e) =>{
     const value = e.target.value
     console.log(value)
     this.setState({question:value})
   }
-  onSubmit = (e) =>{
+  onSubmit = (e) => {
     e.preventDefault()
-    const question = this.state.question
-    this.setState({question_list:question})
+
+    const image = e.target.fileField.files[0]
+    this.addEducator(this.state.name, this.state.about, image)
+    this.setState({ name: "", about: "" })
   }
   render() {
-    const question = this.state.question_list
     return (
-      <div className="App">
-        <header className="App-">
-          <button>Button</button>
-          <button class='success'>Success</button>
-          <button class='warning'>Warning</button>
-          <button class='error'>Error</button>
-          <button disabled>Disabled</button>
-          <ul>{question.map((x)=>(
-              <li key={x.question_id}>{x.question_title}</li>
-          ))}</ul>
-        <form onSubmit={this.onSubmit}>
-          <input onChange={this.handleChange}/>
-          <button>x</button>
-          </form>
-        </header>
+      <div>
+       <Router />
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

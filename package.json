@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/yazid-krayem/survey-project#readme",
   "dependencies": {
-    "concurrently": "^4.1.0"
+    "concurrently": "^4.1.0",
+    "react": "^16.8.1",
+    "react-router-dom": "^4.3.1"
   }
 }
