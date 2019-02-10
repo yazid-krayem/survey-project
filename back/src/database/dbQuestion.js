@@ -3,7 +3,7 @@ import SQL from 'sql-template-strings';
 
 const initializeDatabase = async () =>{
 
-    const db = await sqlite.open("./testing.sqlite");
+    const db = await sqlite.open("./db.sqlite");
 
 
     /**
@@ -75,7 +75,7 @@ const initializeDatabase = async () =>{
    */
     const getQuestion = async (id) => {
         try {
-            const questionsList = await db.all(SQL`SELECT question_id AS id, question_title FROM question WHERE question_id = ${id} `)
+            const questionsList = await db.all(SQL`SELECT * FROM question WHERE question_id = ${id} `)
             const question = question[0]
         if (!question) {
             throw new Error(`question ${id} not found `)
