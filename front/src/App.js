@@ -58,7 +58,7 @@ class App extends Component {
 
 updateCandle = async (id, props) => {
   try {
-    if (!props || !(props.question_text)) {
+    if (!props) {
       throw new Error(
         `you need at least name `
       );
@@ -173,7 +173,7 @@ createQuestion = async props => {
  <button class='error'>Error</button>
  <button disabled>Disabled</button>
  <ul>{question.map((x)=>(
-     <li key={x.question_id}>{x.question_text} </li>
+     <li key={x.question_id}>{x.question_id}--{x.question_text} </li>
  ))}</ul>
      {error_message ? <p> ERROR! {error_message}</p> : false}
         {question.map(question => (

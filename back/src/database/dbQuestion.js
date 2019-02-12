@@ -53,11 +53,11 @@ const initializeDatabase = async () =>{
             if(!props ){
                 throw new Error (`you must provide a question`);
             }
-            const {question_text} = props
+            const {question_type,question_text} = props
             try{
                 let statement = '';
-                if(question_text){
-                    statement = SQL`UPDATE question SET question_text ${question_text} WHERE question_id =${id}`
+                if(props){
+                    statement = SQL`UPDATE question SET question_text=${question_text}, question_type=${question_type} WHERE question_id =${id}`
                 }
                 const result = await db.run(statement)
                 if(result.stmt.changes === 0 ){

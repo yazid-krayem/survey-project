@@ -22,7 +22,7 @@ export default class Question extends React.Component {
         <button onClick={this.toggleEditMode} className="success">
           edit
         </button>
-        <button onClick={() => deleteQuestion(question_id)} className="warning">
+        <button onClick={() => console.log(question_id)} className="warning">
           x
         </button>
         
