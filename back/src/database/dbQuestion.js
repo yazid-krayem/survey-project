@@ -3,12 +3,12 @@ import SQL from 'sql-template-strings';
 
 const initializeDatabase = async () =>{
 
-    const db = await sqlite.open("./db.sqlite");
+    const db = await sqlite.open("./alex.db");
 
 
     /**
    * creates a question
-   * @param {object} props an object with keys `question_title`,`question_type` and `question_data`
+   * @param {object} props an object with keys `question_text`,`question_type`
    * @returns {number} the id of the created question (or an error if things went wrong) 
    */
 
@@ -16,9 +16,9 @@ const initializeDatabase = async () =>{
     if(!props ){
       throw new Error(`you must provide a name and an type`)
     }
-    const { question } = props
+    const { question_text , question_type } = props
     try{
-      const result = await db.run(SQL`INSERT INTO question (question_title) VALUES (${question})`);
+      const result = await db.run(SQL`INSERT INTO question (question_text,question_type) VALUES (${question_text},${question_type})`);
       const id = result.stmt.lastID
       return id
     }catch(e){
@@ -46,7 +46,7 @@ const initializeDatabase = async () =>{
         /**
    * Edits a question
    * @param {number} id the id of the question to edit
-   * @param {object} props an object with at least one of `title_question`
+   * @param {object} props an object with at least one of ``
    */
 
         const updateQuestion = async (id,props) =>{
@@ -57,7 +57,7 @@ const initializeDatabase = async () =>{
             try{
                 let statement = '';
                 if(question){
-                    statement = SQL`UPDATE question SET question_title ${question}, WHERE question_id =${id}`
+                    statement = SQL`UPDATE question SET question_text ${question}, WHERE question_id =${id}`
                 }
                 const result = await db.run(statement)
                 if(result.stmt.changes === 0 ){
@@ -71,7 +71,7 @@ const initializeDatabase = async () =>{
         /**
    * Retrieves a question
    * @param {number} id the id of the question
-   * @returns {object} an object with `question_title`, and `question_id`, representing a question, or an error 
+   * @returns {object} an object with `question_text`, and `question_id`, representing a question, or an error 
    */
     const getQuestion = async (id) => {
         try {
@@ -94,9 +94,9 @@ const initializeDatabase = async () =>{
 
    const getQuestionList = async(orderBy) =>{
        try{
-           let statement = `SELECT question_id AS id , question_title FROM question `
+           let statement = `SELECT question_id AS id , question_text , question_type FROM question `
            switch(orderBy){
-            case 'question_title': statement+= ` ORDER BY question_title`; break;
+            case 'question_text': statement+= ` ORDER BY question_text`; break;
             default: break
         }
         const rows = await db.all(statement)

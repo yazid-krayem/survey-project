@@ -8,8 +8,8 @@ const start = async () => {
   // CREATE
   app.get("/question/new", async (req, res, next) => {
     try {
-      const { question } = req.query;
-      const result = await controller.createQuestion({ question });
+      const { question_text , question_type } = req.query;
+      const result = await controller.createQuestion({ question_text,question_type });
       res.json({ success: true, result });
     } catch (e) {
       next(e);
