@@ -50,14 +50,14 @@ const initializeDatabase = async () =>{
    */
 
         const updateQuestion = async (id,props) =>{
-            if(!props || !props.question){
+            if(!props ){
                 throw new Error (`you must provide a question`);
             }
-            const {question} = props
+            const {question_text} = props
             try{
                 let statement = '';
-                if(question){
-                    statement = SQL`UPDATE question SET question_text ${question}, WHERE question_id =${id}`
+                if(question_text){
+                    statement = SQL`UPDATE question SET question_text ${question_text} WHERE question_id =${id}`
                 }
                 const result = await db.run(statement)
                 if(result.stmt.changes === 0 ){
@@ -71,20 +71,20 @@ const initializeDatabase = async () =>{
         /**
    * Retrieves a question
    * @param {number} id the id of the question
-   * @returns {object} an object with `question_text`, and `question_id`, representing a question, or an error 
+   * @returns {object} an object with `question_text`, `question_type` and `question_id`, representing a question, or an error 
    */
-    const getQuestion = async (id) => {
-        try {
-            const questionsList = await db.all(SQL`SELECT * FROM question WHERE question_id = ${id} `)
-            const question = question[0]
-        if (!question) {
-            throw new Error(`question ${id} not found `)
-        }
-        return question
-    }catch (e) {
-        throw new Error(`couldn't get the question ${id}: ` + e.message)
+  const getQuestion = async (id) => {
+    try{
+      const question_List = await db.all(SQL`SELECT * FROM question WHERE question_id = ${id}`);
+      const question = question_List[0]
+      if(!question){
+        throw new Error(`question ${id} not found`)
+      }
+      return question
+    }catch(e){
+      throw new Error(`couldn't get the question ${id}: `+e.message)
     }
-}
+  }
 
      /**
    * retrieves the questions from the database
