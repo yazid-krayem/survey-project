@@ -45,29 +45,35 @@ const initializeDatabase = async () =>{
 
         /**
    * Edits a question
-   * @param {number} id the id of the question to edit
+   * @param {number} question_id the id of the question to edit
    * @param {object} props an object with at least one of ``
    */
 
-        const updateQuestion = async (id,props) =>{
-            if(!props ){
-                throw new Error (`you must provide a question`);
-            }
-            const {question_type,question_text} = props
-            try{
-                let statement = '';
-                if(props){
-                    statement = SQL`UPDATE question SET question_text=${question_text}, question_type=${question_type} WHERE question_id =${id}`
-                }
-                const result = await db.run(statement)
-                if(result.stmt.changes === 0 ){
-                    throw new Error(`no changes were made`)
-                }
-                return true
-            }catch(e) {
-                throw new Error (`couldn't update the question ${id}:` + e.message)
-            }
-        }
+  const updateQuestion = async (question_id, props) => {
+    if (!props || !(props.question_text || props.question_type )) {
+      throw new Error(`you must provide a question`);
+    }
+    const { question_text,question_type } = props;
+    try {
+      let statement = "";
+      if (question_text && question_type ) {
+        statement = SQL`UPDATE question SET question_text=${question_text}, question_type=${question_type} WHERE question_id = ${question_id}`;
+      } else if (question_text) {
+        statement = SQL`UPDATE question SET question_text=${question_text} WHERE question_id = ${question_id}`;
+      } else if (question_type) {
+        statement = SQL`UPDATE question SET question_type=${question_type} WHERE question_id = ${question_id}`;
+      } 
+      
+      const result = await db.run(statement);
+      if (result.stmt.changes === 0) {
+        throw new Error(`no changes were made`);
+      }
+      return true;
+    } catch (e) {
+      throw new Error(`couldn't update the question ${question_id}: ` + e.message);
+    }
+  }
+
         /**
    * Retrieves a question
    * @param {number} id the id of the question

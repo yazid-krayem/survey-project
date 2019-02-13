@@ -68,7 +68,7 @@ updateCandle = async (id, props) => {
       );
     }
     const response = await fetch(
-      `http://localhost:8080/questions/update/${id}?question_text=${props.question_text}`
+      `http://localhost:8080/questions/update/${id}?question_text=${props.question_text}&question_type=${props.question_type}`
     );
     const answer = await response.json();
     if (answer.success) {
@@ -80,6 +80,7 @@ updateCandle = async (id, props) => {
           const new_question = {
             id: question.id,
             question_text: props.question_text ,
+            question_type:props.question_type
           
             
           };

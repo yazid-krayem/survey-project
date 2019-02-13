@@ -65,8 +65,8 @@ export default class Question extends React.Component {
     // target the form
     const form = evt.target;
     // extract the two inputs from the form
-    const question_type_input = form.question_type_input;
     const question_text_input = form.question_text_input;
+    const question_type_input = form.question_type_input;
 
     // extract the values
     const question_text = question_text_input.value;
