@@ -57,18 +57,18 @@ class App extends Component {
       this.setState({ error_message: err.message });
     }
   };
-
+ 
 //////////////////////////update
 
-updateCandle = async (id, props) => {
+updateQuestion = async (question_id, props) => {
   try {
-    if (!props) {
+    if (!props || !(props.question_text || props.question_type )) {
       throw new Error(
-        `you need at least name `
+        `you need at least something  `
       );
     }
     const response = await fetch(
-      `http://localhost:8080/questions/update/${id}?question_text=${props.question_text}&question_type=${props.question_type}`
+      `http://localhost:8080/questions/update/${question_id}?question_text=${props.question_text}&question_type=${props.question_type}`
     );
     const answer = await response.json();
     if (answer.success) {
@@ -76,13 +76,12 @@ updateCandle = async (id, props) => {
       const question_list = this.state.question_list.map(question => {
         // if this is the contact we need to change, update it. This will apply to exactly
         // one contact
-        if (question.id === id) {
+        if (question.question_id === question_id) {
           const new_question = {
-            id: question.id,
-            question_text: props.question_text ,
-            question_type:props.question_type
+            question_id: question.question_id,
+            question_text: props.question_text || question.question_type,
+            question_type: props.question_type || question.question_text,
           
-            
           };
           return new_question;
         }
@@ -99,6 +98,7 @@ updateCandle = async (id, props) => {
     this.setState({ error_message: err.message });
   }
 };
+
 ////create
 createQuestion = async props => {
   try {
