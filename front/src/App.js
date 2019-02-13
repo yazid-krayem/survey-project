@@ -10,6 +10,10 @@ class App extends Component {
     question_type:'',
     error_message: "",
   }
+  async componentDidMount() {
+    await this.getAllQuestions();
+   }
+   
   getQuestion = async id => {
     // check if we already have the contact
     const previous_question = this.state.question_list.find(
@@ -34,16 +38,16 @@ class App extends Component {
     }
   };
 
-  deleteQuestion = async id => {
+  deleteQuestion = async question_id => {
     try {
       const response = await fetch(
-        `http://localhost:8080/questions/delete/${id}`
+        `http://localhost:8080/questions/delete/${question_id}`
       );
       const answer = await response.json();
       if (answer.success) {
         // remove the user from the current list of users
         const question_list = this.state.question_list.filter(
-          question => question.question_id !== id
+          question => question.question_id !== question_id
         );
         this.setState({ question_list });
       } else {
@@ -72,9 +76,9 @@ updateCandle = async (id, props) => {
       const question_list = this.state.question_list.map(question => {
         // if this is the contact we need to change, update it. This will apply to exactly
         // one contact
-        if (question.question_id === id) {
+        if (question.id === id) {
           const new_question = {
-            id: question.question_id,
+            id: question.id,
             question_text: props.question_text ,
           
             
@@ -104,14 +108,13 @@ createQuestion = async props => {
     }
     const { question_text,question_type } = props;
     const response = await fetch(
-      `http://localhost:8080/questions/new/?question_text=${question_text}&question_type=${question_type}`
+      `http://localhost:8080/question/new?question_text=${question_text}&question_type=${question_type}`
     );
     const answer = await response.json();
     if (answer.success) {
-      // we reproduce the user that was created in the database, locally
-      const id = answer.result;
-      const question = { question_text,question_type, id };
-      const question_list = [...this.state.candle_list, question];
+      const question_id = answer.result;
+      const question = { question_text,question_type, question_id };
+      const question_list = [...this.state.question_list, question];
       this.setState({ question_list });
     } else {
       this.setState({ error_message: answer.message });
@@ -140,10 +143,6 @@ createQuestion = async props => {
       this.setState({ error_message: err.message });
     }
   };
-  async componentDidMount() {
-   await this.getAllQuestions();
-  }
-
 
   handleChange = (e) =>{
     const value = e.target.value
@@ -154,32 +153,30 @@ createQuestion = async props => {
     this.setState({type:value})
     console.log(value)
   }
-  onSubmit = (e) => {
-    e.preventDefault()
-    console.log(this.state.question_list)
-    const value = e.target.value
-    this.addQuestion(this.state.question_list,value)
-    this.setState({ question: ""})
-  }
+  onSubmit = evt => {
+    evt.preventDefault();
+    const { question_text, question_type } = this.state;
+    // create the contact from mail and email
+    this.createQuestion({ question_text,  question_type });
+    // empty name and email so the text input fields are reset
+    this.setState({ question_text:'',question_type:'' });
+  };
+
   render() {
     const  question = this.state.question_list;
     const {error_message } = this.state;
     return (
       <div>
              <header className="App-">
- <button>Button</button>
- <button class='success'>Success</button>
- <button class='warning'>Warning</button>
- <button class='error'>Error</button>
- <button disabled>Disabled</button>
+
  <ul>{question.map((x)=>(
-     <li key={x.question_id}>{x.question_id}--{x.question_text} </li>
+     <li key={x.id}>{x.id}--{x.question_text}{x.question_type} </li>
  ))}</ul>
      {error_message ? <p> ERROR! {error_message}</p> : false}
         {question.map(question => (
           <Question
-            key={question.question_id}
-            question_id={question.question_id}
+            key={question.id}
+            question_id={question.id}
             question_text={question.question_text}
             question_type={question.question_type}
             updateQuestion={this.updateQuestion}
@@ -187,14 +184,26 @@ createQuestion = async props => {
           />
         ))}
 
-<form onSubmit={this.onSubmit}>
- <input onChange={this.handleChange}/>
- <button>x</button>
- <select handleChange={this.handleType}>
-   <option>text</option>
-   <option>radio</option>
- </select>
- </form>
+<form className="third" onSubmit={this.onSubmit}>
+          <input
+            type="text"
+            placeholder="question"
+            onChange={evt => this.setState({ question_text: evt.target.value })}
+            value={this.state.question_text}
+          />
+          <input
+            type="text"
+            placeholder="type"
+            onChange={evt => this.setState({ question_type: evt.target.value })}
+            value={this.state.question_type}
+          />
+         
+          <div>
+            <input type="submit" value="ok" />
+            <input type="reset" value="cancel" className="button" />
+          </div>
+        </form>
+
 </header>
        {/* <Router /> */}
       </div>

@@ -22,7 +22,7 @@ export default class Question extends React.Component {
         <button onClick={this.toggleEditMode} className="success">
           edit
         </button>
-        <button onClick={() => console.log(question_id)} className="warning">
+        <button onClick={() => deleteQuestion(question_id)} className="warning">
           x
         </button>
         
@@ -30,7 +30,7 @@ export default class Question extends React.Component {
     );
   }
   
-  renderEditMode() {
+   renderEditMode() {
     const { question_text, question_type } = this.props;
     return (
       
@@ -58,7 +58,7 @@ export default class Question extends React.Component {
         </div>
       </form>
     );
-  }
+  } 
   onSubmit = evt => {
     // stop the page from refreshing
     evt.preventDefault();
