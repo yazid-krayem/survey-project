@@ -114,13 +114,53 @@ const initializeDatabase = async () =>{
       throw new Error(`couldn't retrieve questions: `+e.message)
    }
    }
-   
+    /**
+   * retrieves the answer from the database
+   * @param {string} orderBy an optional string that is either "answer_id"
+   * @returns {array} the list of questions
+   */
+   const getAnswerList = async(orderBy) =>{
+    try{
+        let statement = `SELECT * FROM answer `
+        switch(orderBy){
+         case 'answer_id': statement+= ` ORDER BY answer_id`; break;
+         default: break
+     }
+     const rows = await db.all(statement)
+   if(!rows.length){
+     throw new Error(`no rows found`)
+    }
+    return rows
+ }catch(e){
+   throw new Error(`couldn't retrieve answer: `+e.message)
+}
+}
+      /**
+   * Retrieves a question
+   * @param {number} id the id of the answer
+   * @returns {object} an object with `answer_id`, `answer_text` and `question_question_id`, representing a question, or an error 
+   */
+  const getAnswer = async (id) => {
+    try{
+      const question_List = await db.all(SQL`SELECT * FROM answer WHERE answer_id = ${id}`);
+      const question = question_List[0]
+      if(!question){
+        throw new Error(`answer ${id} not found`)
+      }
+      return question
+    }catch(e){
+      throw new Error(`couldn't get the question ${id}: `+e.message)
+    }
+  }
+
 const controller = {
     getQuestionList,
     createQuestion,
     updateQuestion,
     deleteQuestion,
-    getQuestion
+    getQuestion,
+    getAnswerList,
+    getAnswer
 }
 return controller
 }

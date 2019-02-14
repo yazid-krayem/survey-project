@@ -61,6 +61,26 @@ const start = async () => {
     }
   });
 
+  //answer List
+  app.get("/answer/list", async (req, res, next) => {
+    try {
+      const { order } = req.query;
+      const answer = await controller.getAnswerList(order);
+      res.json({ success: true, result: answer });
+    } catch (e) {
+      next(e);
+    }
+  });
+/// read answer id
+app.get("/answer/get/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const answer = await controller.getAnswer(id);
+    res.json({ success: true, result: answer });
+  } catch (e) {
+    next(e);
+  }
+});
   // ERROR
   app.use((err, req, res, next) => {
     console.error(err)

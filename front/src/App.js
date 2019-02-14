@@ -197,6 +197,7 @@ createQuestion = async props => {
             placeholder="type"
             onChange={evt => this.setState({ question_type: evt.target.value })}
             value={this.state.question_type}
+            
           />
          
           <div>
